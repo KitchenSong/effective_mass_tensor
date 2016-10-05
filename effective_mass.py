@@ -11,7 +11,7 @@ pi = np.pi
 Ry2J = 2.1798741e-18 # J/Ry
 Bohr2m = 5.29177249e-11 # m/Bohr
 me = 9.10938356e-31 # kg
-latt = 11.8873 * Bohr2m 
+latt = 11.8873 * Bohr2m
 
 
 # The first Brillouin zone of a face centered cubic lattice
@@ -70,7 +70,7 @@ f.close()
 
 
 
-f = open("fit.out", "r")
+f = open("fit.out", "r") # output file for band calculation
 lines = f.readlines()
 for i, line in enumerate(lines):
     if re.search("End of band structure calculation", line):
@@ -102,21 +102,21 @@ for i in range(Nx*Ny*Nz):
         if "=" in a:
             temp = lines[mark_line_start + spacing * i + 2].split()[nnn]
             # lines[mark_line_start + spacing * i + 2].split()[nnn] = temp[1:]
-            kmat[i,:] = np.dot(pos[i,:],bm) # float(temp[1:]) 
+            kmat[i,:] = np.dot(pos[i,:],bm) # float(temp[1:])
             # kmat[i,0] = float(lines[mark_line_start + spacing * i + 2].split()[1])
             # kmat[i,1] = # float(lines[mark_line_start + spacing * i + 2].split()[2])
             # kmat[i,2] = # float(lines[mark_line_start + spacing * i + 2].split()[3])
             for j in range(spacing-3):
                 for k in range(8):
-                    Eband[i,j*8+k] = float(lines[mark_line_start + spacing * i + j +4].split()[k]) 
+                    Eband[i,j*8+k] = float(lines[mark_line_start + spacing * i + j +4].split()[k])
     Emat[i,0] = Eband[i,Nmin -1]
 f.close()
 
 # Calculate the deviation
 
-for i in range(Nx*Ny*Nz):        
-    kmat_dxyz[i,:] = kmat[i,:]-np.dot(km,bm) 
-    Emat_dE[i,:] = (Emat[i,:]-min(Emat)) 
+for i in range(Nx*Ny*Nz):
+    kmat_dxyz[i,:] = kmat[i,:]-np.dot(km,bm)
+    Emat_dE[i,:] = (Emat[i,:]-min(Emat))
 
 # Interplate
 
@@ -135,7 +135,7 @@ f0 = griddata(kmat_dxyz, Emat_dE, (0 * ddx, 0, 0), method='linear')
 f1 = griddata(kmat_dxyz, Emat_dE, (1 * ddx, 0, 0), method='linear')
 f2 = griddata(kmat_dxyz, Emat_dE, (2 * ddx, 0, 0), method='linear')
 
-fxx = 1.0/(12.0*ddx**2)*(-(f_2+f2)+16*(f_1+f1)-30*f0) 
+fxx = 1.0/(12.0*ddx**2)*(-(f_2+f2)+16*(f_1+f1)-30*f0)
 
 # fit fyy
 
@@ -156,7 +156,7 @@ f0 = griddata(kmat_dxyz, Emat_dE, (0, 0, 0 * ddz), method='linear')
 f1 = griddata(kmat_dxyz, Emat_dE, (0, 0, 1 * ddz), method='linear')
 f2 = griddata(kmat_dxyz, Emat_dE, (0, 0, 2 * ddz), method='linear')
 
-fzz = 1.0/(12.0*ddz**2)*(-(f_2+f2)+16*(f_1+f1)-30*f0) 
+fzz = 1.0/(12.0*ddz**2)*(-(f_2+f2)+16*(f_1+f1)-30*f0)
 
 # fit fxy
 
@@ -256,7 +256,17 @@ m = np.linalg.inv(m_1)/me
 
 meig, eivtr = np.linalg.eigh(m, UPLO='L')
 
-print meig, eivtr
+# Write the effective tensor
 
-
-
+f = open("mass_tensor.out", "w") # output file for band calculation
+f.write("Effective mass on priciple axies:\n\n")
+f.write('{0:12.8f} {1:12.8f} {2:12.8f}'.format(meig[0],meig[1],meig[2])+'\n') # Eigenvector
+f.write("\n")
+f.write("Effective mass on priciple axies:\n\n")
+for i in range(3):
+    f.write('{0:12.8f} {1:12.8f} {2:12.8f}'.format(eivtr[i,0],eivtr[i,1],eivtr[i,2])+'\n') # Eigenvector
+f.write("\n")
+f.write("Initial matrix:\n\n")
+for i in range(3):
+    f.write('{0:12.8f} {1:12.8f} {2:12.8f}'.format(m[i,0],m[i,1],m[i,2])+'\n') # Eigenvector
+f.close()
