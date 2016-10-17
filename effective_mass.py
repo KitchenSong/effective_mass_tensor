@@ -40,9 +40,9 @@ pos = np.zeros((Nx*Ny*Nz,3))
 
 ## Resolution
 
-dx = 1.0/20.0/(Nx-1)
-dy = 1.0/20.0/(Ny-1)
-dz = 1.0/20.0/(Nz-1)
+dx = 1.0/100.0/(Nx-1)
+dy = 1.0/100.0/(Ny-1)
+dz = 1.0/100.0/(Nz-1)
 
 # K points
 
@@ -93,7 +93,7 @@ Eband = np.zeros((Nx*Ny*Nz,nbnd))
 
 # Define the index of band minimum (from low energy to high energy)
 
-Nmin = 12 # 10 means No.10 band with the count starting from 1
+Nmin = 11 # 10 means No.10 band with the count starting from 1
 
 # Read the k coordinates and energy
 
@@ -207,7 +207,7 @@ f11  = griddata(kmat_dxyz, Emat_dE, (1 * ddx, 0,  1 * ddz), method='linear')
 f1_1  = griddata(kmat_dxyz, Emat_dE, (1 * ddx, 0,  -1 * ddz), method='linear')
 f_11  = griddata(kmat_dxyz, Emat_dE, (-1 * ddx, 0,  1 * ddz), method='linear')
 
-fxz = 1.0/(600.0*ddx*ddy)*(-63*(f1_2+f2_1+f_21+f_12)\
+fxz = 1.0/(600.0*ddx*ddz)*(-63*(f1_2+f2_1+f_21+f_12)\
     +63*(f_1_2+f_2_1+f12+f21)\
     +44*(f2_2+f_22-f_2_2-f22)\
     +74*(f_1_1+f11-f1_1-f_11))
@@ -234,7 +234,7 @@ f11  = griddata(kmat_dxyz, Emat_dE, (0, 1 * ddy,  1 * ddz), method='linear')
 f1_1  = griddata(kmat_dxyz, Emat_dE, (0, 1 * ddy,   -1 * ddz), method='linear')
 f_11  = griddata(kmat_dxyz, Emat_dE, (0, -1 * ddy,   1 * ddz), method='linear')
 
-fyz = 1.0/(600.0*ddx*ddy)*(-63*(f1_2+f2_1+f_21+f_12)\
+fyz = 1.0/(600.0*ddy*ddz)*(-63*(f1_2+f2_1+f_21+f_12)\
     +63*(f_1_2+f_2_1+f12+f21)\
     +44*(f2_2+f_22-f_2_2-f22)\
     +74*(f_1_1+f11-f1_1-f_11))
@@ -262,11 +262,20 @@ f = open("mass_tensor.out", "w") # output file for band calculation
 f.write("Effective mass on priciple axies:\n\n")
 f.write('{0:12.8f} {1:12.8f} {2:12.8f}'.format(meig[0],meig[1],meig[2])+'\n') # Eigenvector
 f.write("\n")
-f.write("Effective mass on priciple axies:\n\n")
+f.write("Eigenvector:\n\n")
 for i in range(3):
     f.write('{0:12.8f} {1:12.8f} {2:12.8f}'.format(eivtr[i,0],eivtr[i,1],eivtr[i,2])+'\n') # Eigenvector
 f.write("\n")
 f.write("Initial matrix:\n\n")
 for i in range(3):
     f.write('{0:12.8f} {1:12.8f} {2:12.8f}'.format(m[i,0],m[i,1],m[i,2])+'\n') # Eigenvector
+f.write("\n")
+f.write("Conductivity effective mass (if cubic):\n\n")
+mc = 1.0/3.0*(1/meig[0]+1/meig[1]+1/meig[2])
+mc = 1/mc
+f.write('{0:12.8f}'.format(mc)+'\n') # Eigenvector
+md = (abs(meig[0])*abs(meig[1])*abs(meig[2]))**(1.0/3.0)
+f.write("\n")
+f.write("Density of state effective mass:\n\n")
+f.write('{0:12.8f}'.format(md)+'\n') # Eigenvector
 f.close()
