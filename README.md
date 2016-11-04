@@ -6,3 +6,5 @@
   i. Calculate energy on a mesh around L point using Quantum Espresso. <br />
   ii. Interplate the energy value at +dx, -dx, +dy, -dy, +dz, -dz, *etc*. <br />
   iii. Use finite method to calculate the tensor of effective mass. <br />
+
+ * cdt.py can be used to generate unifor mesh for general purpose.
