@@ -93,7 +93,7 @@ Eband = np.zeros((Nx*Ny*Nz,nbnd))
 
 # Define the index of band minimum (from low energy to high energy)
 
-Nmin = 3 # 10 means No.10 band with the count starting from 1
+Nmin = 4 # 10 means No.10 band with the count starting from 1
 
 # Read the k coordinates and energy
 
