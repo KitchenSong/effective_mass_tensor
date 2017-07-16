@@ -1,6 +1,6 @@
 # effective_mass_tensor
 
-## Example : A band minimum at L point in reciprocal space of FCC material
+## Example : A band minimum at L point in reciprocal space of PbTe (Rocksalt structure)
 
 ## Basic idea
   i. Calculate energy on a mesh around L point using Quantum Espresso. <br />
